@@ -28,9 +28,21 @@
           </div>
         </div>
         <div class="form-group row">
+          <label for="minFpsInput" class="col-sm-3 col-form-label">Minimum FPS</label>
+          <div class="col-sm">
+            <input type="number" id="minFpsInput" class="form-control" value="60" min="1" />
+          </div>
+        </div>
+        <div class="form-group row">
           <label for="fpsOutput" class="col-sm-3 col-form-label">FPS</label>
           <div class="col-sm">
             <input type="text" id="fpsOutput" class="form-control" readonly="readonly" />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="fpsROutput" class="col-sm-3 col-form-label">FPS &#x211A;</label>
+          <div class="col-sm">
+            <input type="text" id="fpsROutput" class="form-control" readonly="readonly" />
           </div>
         </div>
       </form>
@@ -45,16 +57,21 @@
     <script>
       var bpmInputElem = document.getElementById("bpmInput");
       var divInputElem = document.getElementById("divInput");
-      bpmInputElem.addEventListener("change", onChange);
-      divInputElem.addEventListener("change", onChange);
+      var minFpsInputElem = document.getElementById("minFpsInput");
+      var fpsOutputElem = document.getElementById("fpsOutput");
+      var fpsROutputElem = document.getElementById("fpsROutput");
+      bpmInputElem.addEventListener("input", onChange);
+      divInputElem.addEventListener("input", onChange);
+      minFpsInputElem.addEventListener("input", onChange);
       onChange(null);
 
       function onChange(event) {
         var bpm = parseFloat(bpmInputElem.value);
         var divider = parseFloat(divInputElem.value);
-        var minFps = 60;
+        var minFps = parseFloat(minFpsInputElem.value);
         var framesPerBeat = Math.ceil(60 * minFps / bpm / divider) * divider;
-        document.getElementById("fpsOutput").value = `${bpm * framesPerBeat}/60`;
+        fpsOutputElem.value = bpm * framesPerBeat / 60 || "";
+        fpsROutputElem.value = (bpm * framesPerBeat || "") + "/60";
       }
     </script>
   </body>
