@@ -38,13 +38,23 @@
         <div class="form-group row">
           <label for="fpsOutput" class="col-sm-3 col-form-label-lg">FPS</label>
           <div class="col-sm">
-            <input type="text" id="fpsOutput" class="form-control form-control-lg" readonly="readonly" />
+            <div class="input-group input-group-lg">
+              <input type="text" id="fpsOutput" class="form-control form-control-lg" readonly="readonly" />
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" id="fpsCopyButton">Copy</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group row">
           <label for="fpsROutput" class="col-sm-3 col-form-label">FPS &#x211A;</label>
           <div class="col-sm">
-            <input type="text" id="fpsROutput" class="form-control" readonly="readonly" />
+            <div class="input-group">
+              <input type="text" id="fpsROutput" class="form-control" readonly="readonly" />
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" id="fpsRCopyButton">Copy</button>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -62,9 +72,13 @@
       var minFpsInputElem = document.getElementById("minFpsInput");
       var fpsOutputElem = document.getElementById("fpsOutput");
       var fpsROutputElem = document.getElementById("fpsROutput");
+      var fpsCopyButtonElem = document.getElementById("fpsCopyButton");
+      var fpsRCopyButtonElem = document.getElementById("fpsRCopyButton");
       bpmInputElem.addEventListener("input", onChange);
       divInputElem.addEventListener("input", onChange);
       minFpsInputElem.addEventListener("input", onChange);
+      fpsCopyButtonElem.addEventListener("click", onClickFpsCopy);
+      fpsRCopyButtonElem.addEventListener("click", onClickFpsRCopy);
       onChange(null);
 
       function onChange(event) {
@@ -74,6 +88,16 @@
         var framesPerBeat = Math.ceil(60 * minFps / bpm / divider) * divider;
         fpsOutputElem.value = bpm * framesPerBeat / 60 || "";
         fpsROutputElem.value = (bpm * framesPerBeat || "") + "/60";
+      }
+
+      function onClickFpsCopy(event) {
+        fpsOutputElem.select();
+        document.execCommand("copy");
+      }
+
+      function onClickFpsRCopy(event) {
+        fpsROutputElem.select();
+        document.execCommand("copy");
       }
     </script>
   </body>
