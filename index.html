@@ -101,6 +101,10 @@
       var fpsROutputElem = document.getElementById("fpsROutput");
       var fpsCopyButtonElem = document.getElementById("fpsCopyButton");
       var fpsRCopyButtonElem = document.getElementById("fpsRCopyButton");
+      var inputElems = [bpmInputElem, divInputElem, minFpsInputElem, fpsOutputElem, fpsROutputElem];
+      inputElems.forEach(function (elem) {
+        elem.addEventListener("keydown", onKeyDown, false);
+      });
       bpmInputElem.addEventListener("input", onChange);
       divInputElem.addEventListener("input", onChange);
       minFpsInputElem.addEventListener("input", onChange);
@@ -134,6 +138,18 @@
       function onClickFpsRCopy(event) {
         fpsROutputElem.select();
         document.execCommand("copy");
+      }
+
+      function onKeyDown(event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          var index = inputElems.indexOf(event.target);
+          if (event.shiftKey) {
+            inputElems[(index - 1 + inputElems.length) % inputElems.length].select();
+          } else {
+            inputElems[(index + 1) % inputElems.length].select();
+          }
+        }
       }
     </script>
   </body>
