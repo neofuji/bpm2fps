@@ -34,25 +34,25 @@
         <p class="lead">Calculate the optimal frame rate for music video authoring</p>
       </header>
 
-      <form>
+      <form novalidate="novalidate">
         <div class="form-group row">
           <label for="bpmInput" class="col-sm-3 col-form-label-lg">BPM</label>
           <div class="col-sm">
-            <input type="number" id="bpmInput" class="form-control form-control-lg" value="100" min="1" placeholder="100" autofocus="autofocus" />
+            <input type="number" id="bpmInput" class="form-control form-control-lg" value="100" min="1" autofocus="autofocus" />
             <small class="form-text text-muted">Beats per minute</small>
           </div>
         </div>
         <div class="form-group row">
           <label for="divInput" class="col-sm-3 col-form-label">Beat Divider</label>
           <div class="col-sm">
-            <input type="number" id="divInput" class="form-control" value="4" min="1" placeholder="4" />
+            <input type="number" id="divInput" class="form-control" value="4" min="1" />
             <small class="form-text text-muted">Frames per beat becomes a multiple of this value</small>
           </div>
         </div>
         <div class="form-group row">
           <label for="minFpsInput" class="col-sm-3 col-form-label">Minimum FPS</label>
           <div class="col-sm">
-            <input type="number" id="minFpsInput" class="form-control" value="30" min="1" placeholder="30" />
+            <input type="number" id="minFpsInput" class="form-control" value="30" min="1" />
             <small class="form-text text-muted">Output FPS satisfies this value
               (commonly <a href="#" class="minFpsPreset" data-value="30">30 FPS</a>
               or <a href="#" class="minFpsPreset" data-value="60">60 FPS</a>)</small>
@@ -105,29 +105,61 @@
       inputElems.forEach(function (elem) {
         elem.addEventListener("keydown", onKeyDown, false);
       });
-      bpmInputElem.addEventListener("input", onChange);
-      divInputElem.addEventListener("input", onChange);
-      minFpsInputElem.addEventListener("input", onChange);
+      bpmInputElem.addEventListener("input", onInput);
+      divInputElem.addEventListener("input", onInput);
+      minFpsInputElem.addEventListener("input", onInput);
       [].forEach.call(document.getElementsByClassName("minFpsPreset"), function (elem) {
         elem.addEventListener("click", onClickMinFpsPreset);
       });
       fpsCopyButtonElem.addEventListener("click", onClickFpsCopy);
       fpsRCopyButtonElem.addEventListener("click", onClickFpsRCopy);
-      onChange(null);
+      calculateFps();
 
-      function onChange(event) {
-        var bpm = parseFloat(bpmInputElem.value);
-        var divider = parseFloat(divInputElem.value);
-        var minFps = parseFloat(minFpsInputElem.value);
-        var framesPerBeat = Math.ceil(60 * minFps / bpm / divider) * divider;
-        fpsOutputElem.value = bpm * framesPerBeat / 60 || "";
-        fpsROutputElem.value = (bpm * framesPerBeat || "") + "/60";
+      function onInput(event) {
+        calculateFps();
+      }
+
+      function calculateFps() {
+        var bpm = parseDecimal(bpmInputElem.value);
+        var divider = parseDecimal(divInputElem.value);
+        var minFps = parseDecimal(minFpsInputElem.value);
+        if (!applyValidationClass(bpmInputElem, bpm[0] > 0) |
+            !applyValidationClass(divInputElem, divider[0] > 0) |
+            !applyValidationClass(minFpsInputElem, minFps[0] > 0)) {
+          fpsOutputElem.value = "";
+          fpsROutputElem.value = "";
+          return;
+        }
+        var d = 60 * Math.pow(10, -bpm[1] - divider[1]);
+        var n = bpm[0] * Math.ceil(d * minFps[0] / Math.pow(10, -minFps[1]) / bpm[0] / divider[0]) * divider[0];
+        fpsOutputElem.value = n / d;
+        fpsROutputElem.value = n + "/" + d;
+      }
+
+      function parseDecimal(s) {
+        var match = /^0*(\d+)(?:\.(\d*[1-9])?0*)?$/.exec(s);
+        if (!match) {
+          return [NaN, NaN];
+        }
+        var significand = parseInt((match[1] || "") + (match[2] || ""), 10);
+        var numDecimals = match[2] && match[2].length || 0;
+        return [significand, -numDecimals];
+      }
+
+      function applyValidationClass(inputElem, cond) {
+        if (cond) {
+          inputElem.classList.remove("is-invalid");
+          return true;
+        } else {
+          inputElem.classList.add("is-invalid");
+          return false;
+        }
       }
 
       function onClickMinFpsPreset(event) {
         event.preventDefault();
         minFpsInputElem.value = event.target.getAttribute("data-value");
-        onChange(null);
+        calculateFps();
       }
 
       function onClickFpsCopy(event) {
