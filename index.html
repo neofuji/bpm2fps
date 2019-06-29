@@ -130,10 +130,10 @@
           fpsROutputElem.value = "";
           return;
         }
-        var d = 60 * Math.pow(10, -bpm[1] - divider[1]);
-        var n = bpm[0] * Math.ceil(d * minFps[0] / Math.pow(10, -minFps[1]) / bpm[0] / divider[0]) * divider[0];
-        fpsOutputElem.value = n / d;
-        fpsROutputElem.value = n + "/" + d;
+        var fpsDenom = 60 * Math.pow(10, -bpm[1] - divider[1]);
+        var fpsNumer = bpm[0] * Math.ceil(fpsDenom * minFps[0] / Math.pow(10, -minFps[1]) / bpm[0] / divider[0]) * divider[0];
+        fpsOutputElem.value = fpsNumer / fpsDenom;
+        fpsROutputElem.value = fpsNumer + "/" + fpsDenom;
       }
 
       function parseDecimal(s) {
