@@ -120,18 +120,18 @@
       }
 
       function calculateFps() {
-        var bpm = parseDecimal(bpmInputElem.value);
-        var divider = parseDecimal(divInputElem.value);
-        var minFps = parseDecimal(minFpsInputElem.value);
-        if (!applyValidationClass(bpmInputElem, bpm[0] > 0) |
-            !applyValidationClass(divInputElem, divider[0] > 0) |
-            !applyValidationClass(minFpsInputElem, minFps[0] > 0)) {
+        var bpmDec = parseDecimal(bpmInputElem.value);
+        var dividerDec = parseDecimal(divInputElem.value);
+        var minFpsDec = parseDecimal(minFpsInputElem.value);
+        if (!applyValidationClass(bpmInputElem, bpmDec[0] > 0) |
+            !applyValidationClass(divInputElem, dividerDec[0] > 0) |
+            !applyValidationClass(minFpsInputElem, minFpsDec[0] > 0)) {
           fpsOutputElem.value = "";
           fpsROutputElem.value = "";
           return;
         }
-        var fpsDenom = 60 * Math.pow(10, -bpm[1] - divider[1]);
-        var fpsNumer = bpm[0] * Math.ceil(fpsDenom * minFps[0] / Math.pow(10, -minFps[1]) / bpm[0] / divider[0]) * divider[0];
+        var fpsDenom = 60 * Math.pow(10, -bpmDec[1] - dividerDec[1]);
+        var fpsNumer = bpmDec[0] * Math.ceil(fpsDenom * minFpsDec[0] / Math.pow(10, -minFpsDec[1]) / bpmDec[0] / dividerDec[0]) * dividerDec[0];
         fpsOutputElem.value = fpsNumer / fpsDenom;
         fpsROutputElem.value = fpsNumer + "/" + fpsDenom;
       }
