@@ -131,7 +131,8 @@
           return;
         }
         var fpsDenom = 60 * Math.pow(10, -bpmDec[1] - dividerDec[1]);
-        var fpsNumer = bpmDec[0] * Math.ceil(fpsDenom * minFpsDec[0] / Math.pow(10, -minFpsDec[1]) / bpmDec[0] / dividerDec[0]) * dividerDec[0];
+        var frameFactor = Math.ceil(fpsDenom * minFpsDec[0] / Math.pow(10, -minFpsDec[1]) / bpmDec[0] / dividerDec[0]);
+        var fpsNumer = bpmDec[0] * frameFactor * dividerDec[0];
         fpsOutputElem.value = fpsNumer / fpsDenom;
         fpsROutputElem.value = fpsNumer + "/" + fpsDenom;
       }
