@@ -81,6 +81,14 @@
             </div>
           </div>
         </div>
+        <table class="border-bottom border-secondary text-nowrap w-100" style="table-layout: fixed">
+          <tr id="timelineBeatsRow" style="font-size: 0.75rem">
+            <td class="border-left border-secondary overflow-hidden">0.000 sec</td>
+          </tr>
+          <tr id="timelineFramesRow" class="text-muted" style="font-size: 0.5625rem; line-height: 1">
+            <td class="border-left border-secondary"><span class="bg-white d-inline-block">1</span></td>
+          </tr>
+        </table>
       </form>
 
       <footer class="my-5 text-center text-muted">
@@ -101,6 +109,8 @@
       var fpsROutputElem = document.getElementById("fpsROutput");
       var fpsCopyButtonElem = document.getElementById("fpsCopyButton");
       var fpsRCopyButtonElem = document.getElementById("fpsRCopyButton");
+      var timelineBeatsRowElem = document.getElementById("timelineBeatsRow");
+      var timelineFramesRowElem = document.getElementById("timelineFramesRow");
       var inputElems = [bpmInputElem, divInputElem, minFpsInputElem, fpsOutputElem, fpsROutputElem];
       inputElems.forEach(function (elem) {
         elem.addEventListener("keydown", onKeyDown, false);
