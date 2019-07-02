@@ -130,6 +130,12 @@
       }
 
       function calculateFps() {
+        while (timelineBeatsRowElem.childElementCount > 1) {
+          timelineBeatsRowElem.removeChild(timelineBeatsRowElem.lastElementChild);
+        }
+        while (timelineFramesRowElem.childElementCount > 1) {
+          timelineFramesRowElem.removeChild(timelineFramesRowElem.lastElementChild);
+        }
         var bpmDec = parseDecimal(bpmInputElem.value);
         var dividerDec = parseDecimal(divInputElem.value);
         var minFpsDec = parseDecimal(minFpsInputElem.value);
@@ -145,6 +151,34 @@
         var fpsNumer = bpmDec[0] * frameFactor * dividerDec[0];
         fpsOutputElem.value = fpsNumer / fpsDenom;
         fpsROutputElem.value = fpsNumer + "/" + fpsDenom;
+        var divider = dividerDec[0] / Math.pow(10, -dividerDec[1]);
+        if (frameFactor * divider > 480) {
+          var colSpan = 1;
+          timelineFramesRowElem.firstElementChild.classList.add("bg-secondary");
+        } else {
+          var colSpan = frameFactor;
+          timelineFramesRowElem.firstElementChild.classList.remove("bg-secondary");
+        }
+        timelineBeatsRowElem.firstElementChild.colSpan = colSpan;
+        for (var i = 1; i < divider + 1; i++) {
+          var cellElem = timelineBeatsRowElem.firstElementChild.cloneNode(false);
+          cellElem.textContent = (Math.min(i, divider) * frameFactor / (fpsNumer / fpsDenom)).toFixed(3);
+          if (i + 1 > divider) {
+            cellElem.colSpan = Math.max(Math.ceil(colSpan * divider % colSpan), 1);
+          }
+          timelineBeatsRowElem.appendChild(cellElem);
+        }
+        timelineBeatsRowElem.lastElementChild.style.width = "30px";
+        for (var i = 1; i <= colSpan * divider; i++) {
+          if (i % colSpan === 0) {
+            var cellElem = timelineFramesRowElem.firstElementChild.cloneNode(true);
+            cellElem.firstElementChild.textContent = i * frameFactor / colSpan + 1;
+          } else {
+            var cellElem = timelineFramesRowElem.firstElementChild.cloneNode(false);
+          }
+          timelineFramesRowElem.appendChild(cellElem);
+        }
+        timelineFramesRowElem.lastElementChild.classList.remove("bg-secondary");
       }
 
       function parseDecimal(s) {
